@@ -78,15 +78,9 @@ namespace HuffmanEncoder
             Console.WriteLine("Encoding starting...");
             foreach (char c in Input)
             {
-                Console.WriteLine();
-                Console.WriteLine("Configuring pathing for character '" + c + "'...");
                 List<Boolean> character_path = rootPathing(Root, c, new List<Boolean>());
-                Console.Write("Path: ");
-                foreach (bool bit in character_path)
-                    Console.Write((bit ? 1 : 0) + "");
                 bits.AddRange(character_path);
             }
-            Console.WriteLine();
             Console.WriteLine("Done!");
             return new BitArray(bits.ToArray());
         }
@@ -94,19 +88,7 @@ namespace HuffmanEncoder
         private List<Boolean> rootPathing(Node node, char character, List<Boolean> path)
         {
             if (node.Left_ is null && node.Right_ is null) // reached leaf
-            {
-                if (node.Character_.Equals(character))
-                {
-                    Console.Write("Found node. Path is: ");
-                    foreach (bool bit in path)
-                        Console.Write((bit ? 1 : 0) + "");
-                    Console.WriteLine();
-                    return path;
-                }
-                else
-                    return null;
-               //return (node.Character_.Equals(character)) ? path : null;
-            }
+                return (node.Character_.Equals(character)) ? path : null;
 
             List<Boolean> leftPath = new List<Boolean>();
             List<Boolean> rightPath = new List<Boolean>();
@@ -116,7 +98,7 @@ namespace HuffmanEncoder
                 path.Add(false);
                 leftPath = rootPathing(node.Left_, character, path);
                 if (leftPath is null)
-                    path.Remove(path.Last());
+                    path.RemoveAt(path.Count - 1);
                 else
                     return leftPath;
             }
@@ -126,12 +108,37 @@ namespace HuffmanEncoder
                 path.Add(true);
                 rightPath = rootPathing(node.Right_, character, path);
                 if (rightPath is null)
-                    path.Remove(path.Last());
+                    path.RemoveAt(path.Count - 1);
                 else
                     return rightPath;
             }
 
             return (leftPath is not null) ? leftPath : rightPath;
+        }
+
+        public String Decode(BitArray bitPath)
+        {
+            List<Boolean> path = new List<Boolean>();
+            foreach (Boolean bit in bitPath)
+                path.Add(bit);
+
+            Node node = Root;
+            List<char> message = new List<char>();
+
+            while (path.Count is not 0)
+            {
+                if (!node.Character_.Equals('~'))
+                {
+                    message.Add(node.Character_);
+                    node = Root;
+                }
+
+                node = (path[0] ? node.Right_ : node.Left_);
+                path.RemoveAt(0);
+            }
+            message.Add(node.Character_);
+
+            return new string(message.ToArray());
         }
     }
 }

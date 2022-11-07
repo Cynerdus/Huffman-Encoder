@@ -25,6 +25,8 @@ namespace HuffmanEncoder
 
             Console.WriteLine();
 
+            Console.WriteLine(huffTree.Decode(huffCode));
+
             Console.ReadLine();
         }
     }
