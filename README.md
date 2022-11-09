@@ -14,6 +14,6 @@ To find the specific code of one character, the inorder search will be used. Fol
 
 The returned value of the list will represent the path to reach the character in the HuffmanTree.
 
-## Decoding
+### Decoding
 
 Decoding a character goes the exact opposite way: Going through the list, the algorithm will go either left or right down in the tree, depending on the path generated previously. If the encoding was done correctly, the decoding function will never return another value than what is expected. 
